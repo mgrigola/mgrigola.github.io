@@ -1,5 +1,5 @@
 #api keys
-config/keys.js
+#config/keys.js
 
 # jetbrains IDE config file
 .idea/*
