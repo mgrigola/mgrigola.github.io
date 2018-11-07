@@ -487,8 +487,9 @@ function on_location_error(e) {
 
 var plotWidth = 300,
     barHeight = 12,
-    spaceOnLeft = 50,
-    spaceOnRight = 5,
+    spaceOnLeft = 36,
+    spaceOnRight = 4,
+    labelEndToRectStart = 4,
     gapBetweenGroups = .5,
     zipCount, maxPlotVal,
     x_scale, y_scale;
@@ -512,8 +513,7 @@ function add_d3_plot() {
     plotObjs.sort(function(a, b) { return a[1]<b[1] ? 1 : -1; });  //sorts plotObjs by second col (income, desc)
 
     var plotHeight = zipCount*(barHeight + gapBetweenGroups) - gapBetweenGroups;
-    var myd3plot = document.getElementById("d3-plot");
-    plotWidth = myd3plot.clientWidth - spaceOnLeft - spaceOnRight;
+    plotWidth = d3.select("#d3-plot").node().getBoundingClientRect().width - spaceOnLeft - spaceOnRight;
 
     //*_scale = a function that maps our data value in domain to pixels/position-on-screen value in range
     x_scale = d3.scale.linear()
@@ -523,7 +523,7 @@ function add_d3_plot() {
     y_scale = d3.scale.linear()
         .range([plotHeight, 0]);
 
-    var plotChart = d3.select(".chart")
+    var plotChart = d3.select("#d3-plot")
         .attr("width", plotWidth)
         .attr("height", plotHeight);
 
@@ -543,15 +543,15 @@ function add_d3_plot() {
         .attr("class", "text-values")
         .attr("x", text_values_attr_x)
         .attr("y", barHeight/2)
-        .attr("fill", "#fff")
-        .attr("dy", ".3em")
+        //.attr("fill", "#fff")
+        .attr("dy", ".4em")
         .text(function(d) { return '$'+d[1].toLocaleString(); });
 
     plotBars.append("text")
         .attr("class", "label")
-        .attr("x", function(d) { return -10; })
+        .attr("x", function(d) { return - labelEndToRectStart; })
         .attr("y", barHeight / 2)
-        .attr("dy", ".25em")
+        .attr("dy", ".4em")
         .text(function(d,i) { return d[0]; });
 
     //draw a line for the y-axis, maybe with some tick marks
@@ -562,7 +562,7 @@ function add_d3_plot() {
         .orient("left");  //put tick left of axis
 
     plotChart.append("g")
-      .attr("class", "y axis")
+      .attr("class", "y-axis")
       .attr("transform", "translate(" + (spaceOnLeft) + ", " + gapBetweenGroups + ")")
       .call(y_axis);
 
@@ -601,12 +601,12 @@ function update_window_resize() {
     if (!x_scale)
         return;
 
-    var plotBars = d3.select(".chart").selectAll("g");
+    var plotRef = d3.select("#d3-plot");
 
-    plotWidth = document.getElementById("d3-plot").clientWidth - spaceOnLeft - spaceOnRight;
+    plotWidth = plotRef.node().getBoundingClientRect().width - spaceOnLeft - spaceOnRight;
     x_scale.range([0, plotWidth]);
-    plotBars.selectAll("plot-bars").attr("width", function(d) { return x_scale(d[1]); });
-    plotBars.selectAll("text-values").attr("x", text_values_attr_x);
+    plotRef.selectAll(".plot-bars").attr("width", function(d) { return x_scale(d[1]); });
+    plotRef.selectAll(".text-values").attr("x", text_values_attr_x);
 }
 d3.select(window).on('resize.updatesvg', update_window_resize);
 
