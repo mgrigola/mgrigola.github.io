@@ -41,20 +41,38 @@
 	text-align: center;
 }
 .pie-box {
-	background-color: rgba(0,0,0,0.5);
-	border-radius: 10px;
+	padding: 4px 4px;
+	background-color: rgba(255, 255, 255, 0.33);
+	border-radius: 50px;
+}
+.pie-box span {
+	/*border: 1px solid #ccc;*/
 	font: 16px sans-serif;
+	text-align: center;
 	font-weight: bold;
+	display: inline-block;
+	width: 75%;
+}
+.pie-slice path{
+    fill: none;
+    stroke: rgba(0,0,0,.75);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 .pie-label {
-	font: 9px sans-serif;
+	font: 12px sans-serif;
 	text-anchor: middle;
-	display: inline-block;
+}
+.pie-label-lower {
+	font: 12px sans-serif;
+	text-anchor: middle;
+	font-weight: 700;
 }
 
 
 #d3-plot {
-    background-color: #333;
+    background-color: #222;
     height: 100%;
     width: 100%;
 }
@@ -74,12 +92,26 @@
     background-color: red;
 }
 */
-.y-axis path,
-.y-axis line {
+.y-axis path, .y-axis line{
   fill: none;
-  stroke: #fff;
+  stroke: #ddd;
   shape-rendering: crispEdges;
 }
+/*.y-axis .domain{
+	fill: none;
+	stroke: #f00;
+	shape-rendering: crispEdges;
+}
+.tick line{
+	fill: none;
+	stroke: #0ff;
+	shape-rendering: crispEdges;
+}
+line.tick{
+	fill: none;
+	stroke: #f0f;
+	shape-rendering: crispEdges; 
+}*/
 .scroll-arrow {
     fill: none;
     /*stroke: rgba(0,0,0,.25);*/
