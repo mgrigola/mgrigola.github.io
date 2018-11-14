@@ -18,18 +18,35 @@ var zipCount, maxPlotVal, //cache some descriptors of the data
     scrollRow = 0, maxScrollRow,       //keep track of row position when scrolling
     svgHeight, svgWidth;  //dimensions of the <td> tag that contains the bar plot (30% width, 100% height)
 
-// function on_mousewheel_plotchart(event) {
-//     on_click_scroll_down();
-// }
-// function on_scroll_plotchart(event) {
-//     alert('scrolled!');
-//}
-function on_wheel_plotchart(event) {
-    console.log(event.wheelDelta, event.wheelDeltaY, event.deltaY);
-    scroll_plot(Math.floor(-event.wheelDeltaY/100.0)*scrollStep);
-}
+
+var headerHeight = 20;
+
 
 function add_d3_plot() {
+
+    var headerDiv = d3.select("#d3-plot").append('div')
+        .attr("class", 'plot-header')
+        .attr("width", '100%')
+        //.attr("fill", "#fff")
+        //.style("fill", "#fff")
+        .attr("height", headerHeight)
+        
+    headerDiv.append('span')
+        //.style("fill", "#fff")
+        .style("border", ".5px solid #000")
+        .attr("width", spaceOnLeft)
+        .html('L_TXT');
+    
+        headerDiv.append('span')
+        .attr("width", "100%")
+        .html('R_TXT');
+
+    var plotDiv = d3.select('#d3-plot').append('div')
+        .attr('height', '100%')
+        .attr('width', '100%');
+    var plotChart = plotDiv.append('svg');
+    //var plotChart = d3.select('#d3-plot').append('svg');
+
     //assuming zipIncomeVals is already loaded...
     var plotObjs = [];
     for (var zipId in zipIncomeVals) {
@@ -51,25 +68,12 @@ function add_d3_plot() {
     var plotWidth = svgWidth - spaceOnLeft - spaceOnRight;
     var plotHeight = zipCount*(barHeight + gapBetweenBars) - gapBetweenBars;  //probably runs way below page
 
-    //*_scale = a function that maps our data value in domain to pixels/position-on-screen value in range
-    x_scale = d3.scaleLinear()
-        .domain([0, maxPlotVal])
-        .range([0, plotWidth]);
-
     //contains the whole right side/bar chart. fills right half of screen
-    var plotChart = d3.select("#d3-plot")
-        .attr("width", plotWidth)
+    //var plotChart = d3.select("#d3-plot")
+    plotChart
+        //.attr("width", plotWidth)
+        .attr("width", svgWidth)
         .attr("height", plotHeight);
-        // .on("mousewheel", on_mousewheel_plotchart)
-        // .on("scoll", on_scroll_plotchart)
-        // .on("wheel", on_wheel_plotchart);
-
-    //selection.on("wheel", func) doesn't have access to wheel direction?
-    //$('#d3-plot')[0]
-    document.getElementById('d3-plot')
-        .addEventListener("wheel", on_wheel_plotchart, {passive:true});
-        // .on("scoll", on_scroll_plotchart)
-        // .on("wheel", on_wheel_plotchart);
 
     //a group to contain all movable elements in the bar plot for resizing and scrolling
     var plotBars = plotChart.selectAll("g")
@@ -77,6 +81,11 @@ function add_d3_plot() {
         .enter().append("g")
             .attr("class", 'plot-elems')
             //.attr("transform", plot_elem_transform);
+
+    //*_scale = a function that maps our data value in domain to pixels/position-on-screen value in range
+    x_scale = d3.scaleLinear()
+        .domain([0, maxPlotVal])
+        .range([0, plotWidth]);
 
     //the colorful data bars
     plotBars.append("rect")
@@ -105,7 +114,6 @@ function add_d3_plot() {
         .text(function(d,i) { return d[0]; });
 
     //y-axis line and ticks. this is the d3-v4 version: scale.linear -> scaleLinear, svg.axis->axisLeft
-    //god damn this axis never behaves how I want it to!!!ntliuh89pfu5
     y_scale = d3.scaleLinear().range([0, plotHeight]);  //.domain([plotHeight, 0])
     plotChart.append("g")
         .attr("class", "y-axis")
@@ -118,7 +126,7 @@ function add_d3_plot() {
             .tickFormat("")
         );
 
-
+    //the arrows that allow scrolling through the plot:
     //var arrowDataBot = [[0,0],[arrowWidth,arrowHeight],[2*arrowWidth,0]];
     var arrowDataBot = [[0,0],[arrowWidth-1,arrowHeight],[arrowWidth+1,arrowHeight],[2*arrowWidth,0]];
     var arrowDataTop = [[0,arrowHeight],[arrowWidth-1,0],[arrowWidth+1,0],[2*arrowWidth,arrowHeight]];  //can programmatically invert? having this duplicate irks me
@@ -168,6 +176,13 @@ function add_d3_plot() {
         .on("click", function () { scroll_plot(-scrollStep); } )
         .on("mouseover", on_mouseover_scroll_up)
         .on("mouseout", on_mouseout_scroll_up);
+
+
+    //selection.on("wheel", func) doesn't have access to wheel direction?
+    //$('#d3-plot')[0]
+    document.getElementById('d3-plot')
+        .addEventListener("wheel", on_wheel_plotchart, {passive:true});
+
 
     d3.select(window).on('resize.updatesvg', update_window_resize);  //function called on global window resize
     update_window_resize();
@@ -314,6 +329,11 @@ function on_click_plotbar() {
     zoom_to_feature(topLayer);
 }
 
+function on_wheel_plotchart(event) {
+    console.log(event.wheelDelta, event.wheelDeltaY, event.deltaY);
+    scroll_plot(Math.floor(-event.wheelDeltaY/100.0)*scrollStep);
+}
+ 
 
 //kinda moves an element to back, behind other elements at same level.
 //Just pushes the element to the top of the list of stuff in its parent element (they get drawn in order, later stuff covers earlier stuff)

@@ -55,7 +55,7 @@
 }
 .pie-slice path{
     fill: none;
-    stroke: rgba(0,0,0,.75);
+    stroke: rgba(0,0,0,.5);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -72,9 +72,13 @@
 
 
 #d3-plot {
-    background-color: #222;
+    background-color: #333;
     height: 100%;
     width: 100%;
+}
+.plot-header {
+	background-color: #fff;
+	font: 11px sans-serif;
 }
 #d3-plot .text-value {
   fill: #fff;

@@ -1,3 +1,5 @@
+var zipBoundSrc = 'data/cb_2017_us_zcta510_500k_IL.json';
+
 var NmMap = {};  //make a namespace for each file?
 
 var mapBoxKey = configKeys.mapBoxApiKey; // place your mapbox key here or create config/config.js and set
@@ -99,7 +101,6 @@ var keyToDisplayDescription = 'Mean Household Income ($)';
 var zipIncomeVals = {};
 var zipIncomeSrc = 'data/incomeDistribByZipcode.json';  //now with all the zips in US?
 var geojsonZipData;  //the zip code boundary coordinates stored in (geo)JSON format
-var zipBoundSrc = 'data/cb_2017_us_zcta510_500k_CA.json';
 
 //load the interesting data and zip code boundaries.
 $(document).ready(function() {
@@ -340,7 +341,7 @@ controlInfo.update_info = function(leafletLayer) {
             .attr("class", 'pie-slice');
     
     pieSlices.append('path')
-        .style("fill", pie_color_func)
+        .style("fill", pie_color_func)  //style overrides the style in css, attr does not (<p color="red"> vs <p style="color:red">)
         //.attr("fill", pie_color_func)
         .attr("d", debug_arc_path);
 
@@ -436,6 +437,7 @@ function calc_colormap_scale() {
     colormapMinValPop = round_sig_figs(colormapMinValPop, 1, false, Math.ceil);
     colormapMaxValPop = round_sig_figs(colormapMaxValPop, 1, false, Math.floor);
     pieColorData = [map_color(10000), map_color(12500), map_color(20000), map_color(30000), map_color(42500), map_color(62500), map_color(87500), map_color(125000), map_color(175000), map_color(999999)];
+    pieColorData = [map_color(10000), map_color(15000), map_color(25000), map_color(35000), map_color(50000), map_color(75000), map_color(100000), map_color(150000), map_color(200000), map_color(999999)];
 }
 
 function rgb_2_str(r,g,b) {
@@ -464,7 +466,7 @@ LMap.locate({setView: true});
 var locMarker, locCircle;
 function on_location_found(e) {
     var uncertaintyRadius = e.accuracy / 2;
-    e.latlng = [38,-114];
+    //e.latlng = [38,-114];
     locMarker = L.marker(e.latlng, {opacity:.75, title: e.latlng});
     locMarker.addTo(LMap);
     var locPopup = L.popup({opacity:.5});
