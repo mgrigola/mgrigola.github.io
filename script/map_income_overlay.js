@@ -27,8 +27,8 @@ var layerDark = L.tileLayer('https://api.mapbox.com/v4/{styleId}/{z}/{x}/{y}.{fo
 
 // //unnecessary to have multiple layers here. just to see/show how baselayers works
 // var baseLayers = {
-//     "light": layerLight,
-//     "dark": layerDark
+//     'light': layerLight,
+//     'dark': layerDark
 // };
 
 var activeOverlays = [];
@@ -133,8 +133,8 @@ $(document).ready(function() {
 
             //add the second layer button in upper right to toggle pop/inc
             var overlays = {
-                "Mean Income": geojsonZipData,
-                "Population": geojsonZipDataPop
+                'Mean Income': geojsonZipData,
+                'Population': geojsonZipDataPop
             };
             L.control.layers(null, overlays).addTo(LMap);  //add just the overlay, no baseLayer (already done elsewhere)
 
@@ -217,7 +217,9 @@ function highlight_feature(leafletLayer) {
 function on_mouseout_feature(mouseEvent) { reset_highlight(mouseEvent.target); }
 function reset_highlight(leafletLayer) {
     leafletLayer.setStyle(leafletLayer.defaultOptions.style(leafletLayer.feature));
-    hoverPopup.closePopup();
+    // hoverPopup.closePopup();  //doesn't do anything... ???
+    // hoverPopup.closeTooltip();  //also doesn't do anything... 
+    hoverPopup.remove();  // more aggressively destroy the object
     regionId = null;
 }
 
@@ -325,10 +327,10 @@ controlInfo.update_info = function(leafletLayer) {
     var pieThing = d3.select('.pie-box').append('div');
     var pieThing2 = pieThing.append('svg')
         .data([incomeData])
-        .attr("width", pieWidth+4)
-        .attr("height", pieHeight+4)
-        .append("g")
-            .attr("transform", 'translate('+(pieWidth/2+2)+','+(pieHeight/2+2)+')');
+        .attr('width', pieWidth+4)
+        .attr('height', pieHeight+4)
+        .append('g')
+            .attr('transform', 'translate('+(pieWidth/2+2)+','+(pieHeight/2+2)+')');
 
     var pieLayout = d3.pie()
         .value(pie_layout_func)
@@ -338,22 +340,22 @@ controlInfo.update_info = function(leafletLayer) {
     var pieSlices = pieThing2.selectAll('g.pie-slice')
         .data(pieLayout)
         .enter().append('g')
-            .attr("class", 'pie-slice');
+            .attr('class', 'pie-slice');
     
     pieSlices.append('path')
-        .style("fill", pie_color_func)  //style overrides the style in css, attr does not (<p color="red"> vs <p style="color:red">)
-        //.attr("fill", pie_color_func)
-        .attr("d", debug_arc_path);
+        .style('fill', pie_color_func)  //style overrides the style in css, attr does not (<p color="red"> vs <p style="color:red">)
+        //.attr('fill', pie_color_func)
+        .attr('d', debug_arc_path);
 
     var slicesThatFitText = pieSlices.filter(d => (d.endAngle-d.startAngle)*pieRad/2>30)
     slicesThatFitText.append('text') //newer syntax for defining a function? I like it
         .attr('class', 'pie-label')
-        .attr("transform", pie_text_transform)
+        .attr('transform', pie_text_transform)
         .text(pie_text_func);
         
     slicesThatFitText.append('text')
         .attr('class', 'pie-label-lower')
-        .attr("transform", pie_text_transform_lower)
+        .attr('transform', pie_text_transform_lower)
         .text(d => d.data.value+'%') //zipIncomeVals[props.zip]['HC01_EST_VC01']/100.0)
 };
 
