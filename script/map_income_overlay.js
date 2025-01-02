@@ -16,13 +16,12 @@ var LMap = L.map('leaflet-map');  // big L is leaflet
 //     format: 'png'
 // }).addTo(LMap);
 
-var layerDark = L.tileLayer('https://api.mapbox.com/v4/{styleId}/{z}/{x}/{y}.{format}?access_token={accessToken}', {
+var layerDark = L.tileLayer('https://api.mapbox.com/styles/v1/{styleId}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     accessToken: mapBoxKey,
     maxZoom: 13,
     minZoom: 7,
     attribution: 'mapbox.com',
-    styleId: 'mapbox.dark',
-    format: 'png'
+    styleId: 'dark-v9'
 }).addTo(LMap);
 
 // //unnecessary to have multiple layers here. just to see/show how baselayers works
