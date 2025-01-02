@@ -16,7 +16,7 @@ var LMap = L.map('leaflet-map');  // big L is leaflet
 //     format: 'png'
 // }).addTo(LMap);
 
-var layerDark = L.tileLayer('https://api.mapbox.com/styles/v1/{styleId}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+var layerDark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{styleId}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     accessToken: mapBoxKey,
     maxZoom: 13,
     minZoom: 7,
